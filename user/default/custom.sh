@@ -211,12 +211,22 @@ fi
 # -------------------------------------------------
 echo "Installing latest MosDNS..."
 rm -rf package/mosdns
-if ! git clone --depth=1 https://github.com/sbwml/luci-app-mosdns.git package/mosdns; then
+if ! git clone --depth=1 -b v5 https://github.com/sbwml/luci-app-mosdns.git package/mosdns; then
     echo "ERROR: Failed to download MosDNS!"; exit 1
 fi
-for pkg in mosdns v2dat luci-app-mosdns; do
+# 注意：v5 分支的仓库结构已重构，只剩 luci-app-mosdns/ 和 geo2txt/
+# （geo2txt 取代了旧的 v2dat；mosdns 核心改由 feeds 提供）
+for pkg in luci-app-mosdns geo2txt; do
     [ -f "package/mosdns/$pkg/Makefile" ] || { echo "ERROR: MosDNS component '$pkg' missing Makefile!"; exit 1; }
 done
+
+# luci-app-mosdns 依赖 +v2ray-geoip +v2ray-geosite，官方建议单独克隆更新版仓库
+rm -rf feeds/packages/net/v2ray-geodata package/v2ray-geodata
+if ! git clone --depth=1 https://github.com/sbwml/v2ray-geodata.git package/v2ray-geodata; then
+    echo "ERROR: Failed to download v2ray-geodata!"; exit 1
+fi
+[ -f package/v2ray-geodata/Makefile ] || { echo "ERROR: v2ray-geodata missing Makefile!"; exit 1; }
+
 echo "MosDNS installed successfully."
 
 
