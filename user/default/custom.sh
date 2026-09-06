@@ -245,6 +245,20 @@ echo "OpenClash installed successfully."
 
 
 # -------------------------------------------------
+# Install luci-app-taskplan (计划任务)
+# -------------------------------------------------
+echo "Installing luci-app-taskplan..."
+rm -rf /tmp/taskplan-src package/luci-app-taskplan
+if ! git clone --depth=1 https://github.com/sirpdboy/luci-app-taskplan.git /tmp/taskplan-src; then
+    echo "ERROR: Failed to download luci-app-taskplan!"; exit 1
+fi
+mv /tmp/taskplan-src/luci-app-taskplan package/luci-app-taskplan
+rm -rf /tmp/taskplan-src
+[ -f package/luci-app-taskplan/Makefile ] || { echo "ERROR: luci-app-taskplan missing Makefile!"; exit 1; }
+echo "luci-app-taskplan installed successfully."
+
+
+# -------------------------------------------------
 # Install Turbo ACC (mufeng05 fork)
 # (The device's own hardware acceleration -- e.g. HNAT -- already
 #  handles flow acceleration, so turboacc's own "fastpath" engine
