@@ -14,7 +14,6 @@
 - 🎨 默认 Aurora LuCI 主题
 - 🕐 系统时区：北京（UTC+8）
 - 🌡️ LuCI 首页增加设备温度及风扇转速显示
-- 📦软件源使用北京大学镜像站
 - ⚡ Wi-Fi 7（MLO / EHT320）+ usteer 智能漫游
 - 🚀 TurboACC nftables 全锥形 NAT（复用设备自带 NPU 硬件转发）
 - 🌍 内置 OpenClash 代理客户端
