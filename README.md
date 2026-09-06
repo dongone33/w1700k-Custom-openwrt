@@ -15,7 +15,7 @@
 - 🕐 系统时区：北京（UTC+8）
 - 🌡️ LuCI 首页增加设备温度及风扇转速显示
 - ⚡ Wi-Fi 7（MLO / EHT320）+ usteer 智能漫游
-- 🚀 TurboACC nftables 全锥形 NAT（复用设备自带 NPU 硬件转发）
+- 🚀 TurboACC nftables 全锥形 NAT（复用设备自带 NPU 硬件转发，请在Turbo Acc启用硬件转发功能）
 - 🌍 内置 OpenClash 代理客户端
 - 🧭 内置 MosDNS 智能分流 DNS
 - ⏰ 计划任务插件（开机任务 / 定时任务，支持自定义脚本）
