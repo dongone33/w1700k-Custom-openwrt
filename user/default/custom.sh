@@ -259,21 +259,6 @@ echo "luci-app-taskplan installed successfully."
 
 
 # -------------------------------------------------
-# Install luci-app-filetransfer (文件传输, from coolsnowwolf/luci)
-# -------------------------------------------------
-echo "Installing luci-app-filetransfer..."
-rm -rf /tmp/luci-filetransfer-src package/luci-app-filetransfer
-if ! git clone --depth=1 --filter=blob:none --sparse https://github.com/coolsnowwolf/luci.git /tmp/luci-filetransfer-src; then
-    echo "ERROR: Failed to download luci-app-filetransfer source (coolsnowwolf/luci)!"; exit 1
-fi
-git -C /tmp/luci-filetransfer-src sparse-checkout set applications/luci-app-filetransfer
-mv /tmp/luci-filetransfer-src/applications/luci-app-filetransfer package/luci-app-filetransfer
-rm -rf /tmp/luci-filetransfer-src
-[ -f package/luci-app-filetransfer/Makefile ] || { echo "ERROR: luci-app-filetransfer missing Makefile!"; exit 1; }
-echo "luci-app-filetransfer installed successfully."
-
-
-# -------------------------------------------------
 # Install Turbo ACC (mufeng05 fork)
 # (The device's own hardware acceleration -- e.g. HNAT -- already
 #  handles flow acceleration, so turboacc's own "fastpath" engine
