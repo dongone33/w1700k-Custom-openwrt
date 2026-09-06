@@ -1,0 +1,6 @@
+#切换北大源
+http://mirrors.pku.edu.cn/immortalwrt/releases/24.10.5/packages/aarch64_cortex-a53/base
+http://mirrors.pku.edu.cn/immortalwrt/releases/24.10.5/packages/aarch64_cortex-a53/luci
+http://mirrors.pku.edu.cn/immortalwrt/releases/24.10.5/packages/aarch64_cortex-a53/packages
+http://mirrors.pku.edu.cn/immortalwrt/releases/24.10.5/packages/aarch64_cortex-a53/routing
+http://mirrors.pku.edu.cn/immortalwrt/releases/24.10.5/packages/aarch64_cortex-a53/telephony
