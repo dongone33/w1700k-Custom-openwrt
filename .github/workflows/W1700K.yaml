@@ -98,7 +98,7 @@ jobs:
         find -L openwrt_bin/targets/*/* -maxdepth 1 \( -name '*sysupgrade.itb' -o -name 'profiles.json' \) -exec install -D -t firmware {} +
         PREFIX="W1700K-OpenWrt_"
         [ "${{ matrix.target }}" = "ubi2-oc" ] && PREFIX="W1700K-OpenWrt-OC_"
-        VERSION="${PREFIX}$(TZ=Asia/Hong_Kong date +'%y.%m.%d-%H.%M.%S')_r$(jq -r '.version_code' firmware/profiles.json | sed 's/^r//; s/-.*//')"
+        VERSION="${PREFIX}$(TZ=Asia/Shanghai date +'%y.%m.%d-%H.%M.%S')_r$(jq -r '.version_code' firmware/profiles.json | sed 's/^r//; s/-.*//')"
         echo "$VERSION" > firmware/version.txt
         RELEASE_NOTES="firmware/release-notes.md"
         if [ "${{ matrix.target }}" = "ubi2" ]; then
@@ -109,7 +109,7 @@ jobs:
 
         - 机型：Quantum Fiber / Gemtek W1700K
         - 固件分支：\`ubi2\`
-        - 构建时间：$(TZ=Asia/Hong_Kong date '+%Y-%m-%d %H:%M:%S %Z')
+        - 构建时间：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S %Z')
         - 固件源码：https://github.com/OpenWRT-fanboy/OpenW1700k
         - 本 Release 仅包含 \`sysupgrade.itb\` 升级镜像。
 
@@ -123,7 +123,7 @@ jobs:
 
         - 机型：Quantum Fiber / Gemtek W1700K
         - 固件分支：\`ubi2-oc\`
-        - 构建时间：$(TZ=Asia/Hong_Kong date '+%Y-%m-%d %H:%M:%S %Z')
+        - 构建时间：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S %Z')
         - 固件源码：https://github.com/OpenWRT-fanboy/OpenW1700k
         - 本 Release 仅包含 \`sysupgrade.itb\` 升级镜像。
 
