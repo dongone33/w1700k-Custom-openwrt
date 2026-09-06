@@ -14,7 +14,14 @@
 - 🎨 默认 Aurora LuCI 主题
 - 🕐 系统时区：香港（UTC+8）
 - 🌡️ LuCI 首页增加设备温度及风扇转速显示
-
+- 📦软件源使用北京大学镜像站
+- ⚡ Wi-Fi 7（MLO / EHT320）+ usteer 智能漫游
+- 🚀 TurboACC nftables 全锥形 NAT（复用设备自带 NPU 硬件转发）
+- 🌍 内置 OpenClash 代理客户端
+- 🧭 内置 MosDNS 智能分流 DNS
+- ⏰ 计划任务插件（开机任务 / 定时任务，支持自定义脚本）
+- 📁 文件传输插件（网页端上传 / 下载 ipk 等文件）
+- 🔌 UPnP、Wake-on-LAN、ttyd 网页终端等常用插件
 ---
 
 ## 📦 固件版本
@@ -58,7 +65,7 @@ LuCI 状态首页显示 CPU、主板、10G WAN/LAN PHY、2.4/5/6 GHz WiFi 温度
 
 ## 🔄 自动构建
 
-GitHub Actions 每日 **香港时间 14:00** 自动构建：
+GitHub Actions 每日 **北京时间 00:00** 自动构建：
 
 ```text
 W1700K-OpenWrt_<构建时间>_r<版本号>
