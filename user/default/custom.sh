@@ -118,6 +118,9 @@ else
     exit 1
 fi
 
+echo "=============================================="
+echo "Custom commands completed"
+
 # -------------------------------------------------
 # Install MosDNS (mosdns core + v2dat + luci-app-mosdns)
 # -------------------------------------------------
@@ -278,17 +281,3 @@ echo "Enabling Turbo ACC..."
 
 grep -qxF 'CONFIG_PACKAGE_luci-app-turboacc=y' .config || \
     echo 'CONFIG_PACKAGE_luci-app-turboacc=y' >> .config
-
-
-# -------------------------------------------------
-# Enable Chinese language
-# -------------------------------------------------
-
-echo "Enabling Chinese language..."
-
-grep -qxF 'CONFIG_LUCI_LANG_zh_Hans=y' .config || \
-    echo 'CONFIG_LUCI_LANG_zh_Hans=y' >> .config
-
-
-echo "=============================================="
-echo "Custom commands completed"
