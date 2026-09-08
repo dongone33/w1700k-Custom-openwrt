@@ -118,8 +118,6 @@ else
     exit 1
 fi
 
-echo "=============================================="
-echo "Custom commands completed"
 
 # -------------------------------------------------
 # Install MosDNS (mosdns core + v2dat + luci-app-mosdns)
@@ -193,6 +191,7 @@ if ! bash /tmp/add_turboacc.sh; then
 fi
 rm -f /tmp/add_turboacc.sh
 
+
 # -------------------------------------------------
 # Fix: mufeng05/turboacc's add_turboacc.sh has no
 # "--no-sfe" switch (unlike other turboacc forks) --
@@ -219,6 +218,7 @@ if ! ls target/linux/generic/hack-*/952-add-net-conntrack-events-support-multipl
 fi
 echo "Turbo ACC (mufeng05) installed successfully."
 
+
 # -------------------------------------------------
 # Fix: the mufeng05/turboacc libnftnl patch adds a
 # new source file via Makefile.am but ships no
@@ -237,6 +237,7 @@ if ! grep -q '^PKG_FIXUP:=autoreconf' "$libnftnl_makefile"; then
 fi
 grep -q '^PKG_FIXUP:=autoreconf' "$libnftnl_makefile" || { echo "ERROR: failed to inject PKG_FIXUP:=autoreconf into libnftnl Makefile!"; exit 1; }
 echo "libnftnl PKG_FIXUP:=autoreconf applied."
+
 
 # -------------------------------------------------
 # Ship Turbo ACC with its acceleration ("fastpath")
@@ -273,6 +274,7 @@ EOF
 
 echo "Turbo ACC fastpath (flow-offload/HNAT engine) set to disabled by default."
 
+
 # -------------------------------------------------
 # Enable Turbo ACC (nft-fullcone)
 # -------------------------------------------------
@@ -281,3 +283,7 @@ echo "Enabling Turbo ACC..."
 
 grep -qxF 'CONFIG_PACKAGE_luci-app-turboacc=y' .config || \
     echo 'CONFIG_PACKAGE_luci-app-turboacc=y' >> .config
+
+
+echo "=============================================="
+echo "Custom commands completed"
