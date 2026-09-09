@@ -25,6 +25,22 @@
 - 🔌 添加 UPnP 常用插件
 ---
 
+## 🧩 预装应用
+
+精简纯净原则，仅内置硬件深度适配与基础网络管理应用，源码由专属源 [yahuisme/packages](https://github.com/yahuisme/packages) 定制维护并全中文支持：
+
+| 插件 | 功能说明 |
+| :--- | :--- |
+| [`luci-app-airoha-npu`](https://github.com/yahuisme/packages/tree/main/luci-app-airoha-npu) | Airoha NPU 状态监控与 SoC 频率控制 |
+| [`luci-app-airoha-fancontrol`](https://github.com/yahuisme/packages/tree/main/luci-app-airoha-fancontrol) | 动态温控曲线与四线 PWM 风扇调速 |
+| [`luci-app-airoha-flowsense`](https://github.com/yahuisme/packages/tree/main/luci-app-airoha-flowsense) | PPE 硬件流控与加速状态实时监控 |
+| [`luci-app-wifi7`](https://github.com/yahuisme/packages/tree/main/luci-app-wifi7) | Wi-Fi 7 射频、MLO 与运行状态管理 |
+| `luci-app-usteer` | AP / Mesh 弱信号剔除与智能漫游辅助 |
+| `luci-app-wol` | 网络唤醒（Wake-on-LAN） |
+| `luci-app-ttyd` | 网页终端控制台 |
+
+---
+
 ## 📦 固件版本
 
 | 固件 | 说明 |
@@ -66,7 +82,7 @@ LuCI 状态首页显示 CPU、主板、10G WAN/LAN PHY、2.4/5/6 GHz WiFi 温度
 
 ## 🔄 自动构建
 
-GitHub Actions 每日 **香港时间 14:00** 自动构建：
+GitHub Actions 每日自动构建：
 
 ```text
 W1700K-OpenWrt_<构建时间>_r<版本号>
