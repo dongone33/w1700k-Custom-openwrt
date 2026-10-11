@@ -87,7 +87,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertLess(STEPS.index(step('Compile firmware')), STEPS.index(check))
         self.assertIn('--restored', check['run'])
         admit = step('dl_budget')
-        save = next(s for s in STEPS if s.get('uses') == 'actions/cache/save@main' and s['with']['path'] == 'dlarchive')
+        save = next(s for s in STEPS if s.get('uses') == 'actions/cache/save@v6' and s['with']['path'] == 'dlarchive')
         for changed in ('true', 'false', ''):
             for admitted in ('true', 'false', ''):
                 for archive in ('present', ''):
@@ -230,7 +230,7 @@ class WorkflowTests(unittest.TestCase):
         previous = -1
         for kind, path in [('cc', 'ccarchive'), ('tc', 'tcarchive'), ('dl', 'dlarchive')]:
             admission = step(kind + '_budget')
-            save = next(s for s in STEPS if s.get('uses') == 'actions/cache/save@main'
+            save = next(s for s in STEPS if s.get('uses') == 'actions/cache/save@v6'
                         and s['with']['path'] == path)
             cleanup = step('Prune old ' + {'tc': 'toolchain', 'cc': 'compiler', 'dl': 'download'}[kind] + ' caches')
             self.assertLess(previous, STEPS.index(admission))

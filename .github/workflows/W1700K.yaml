@@ -24,16 +24,16 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
     - name: Check out repository
-      uses: actions/checkout@main
+      uses: actions/checkout@v7
 
     # Rolling caches contain no staging or build stamps.
     - name: Restore compiler cache
       id: gh
-      uses: actions/cache/restore@main
+      uses: actions/cache/restore@v6
       with: {path: ccarchive, key: 'cc-v3-ubi2.${{ github.run_id }}.${{ github.run_attempt }}', restore-keys: 'cc-v3-ubi2.'}
     - name: Restore download cache
       id: dl
-      uses: actions/cache/restore@main
+      uses: actions/cache/restore@v6
       with: {path: dlarchive, key: 'dl-v3.${{ github.run_id }}.${{ github.run_attempt }}', restore-keys: 'dl-v3.'}
     - name: Prepare build environment
       run: |
@@ -104,7 +104,7 @@ jobs:
         echo "key=tc-v3-ubi2-$KEY" >> "$GITHUB_OUTPUT"
     - name: Restore toolchain cache
       id: tc
-      uses: actions/cache/restore@main
+      uses: actions/cache/restore@v6
       with:
         path: tcarchive
         key: ${{ steps.inputs.outputs.key }}
@@ -175,7 +175,7 @@ jobs:
         # Retire confirmed rolling compiler generations before admitting toolchain.
         python3 scripts/cache_helper.py admit 'cc-v3-ubi2.' ccarchive/ccache.tar.gz '${{ steps.gh.outputs.cache-primary-key }}'
     - name: Save compiler cache
-      uses: actions/cache/save@main
+      uses: actions/cache/save@v6
       if: steps.cc_budget.outputs.save == 'true' && hashFiles('ccarchive/ccache.tar.gz') != ''
       with: {path: ccarchive, key: '${{ steps.gh.outputs.cache-primary-key }}'}
     - name: Prune old compiler caches
@@ -186,7 +186,7 @@ jobs:
       if: steps.tc.outputs.cache-hit != 'true'
       run: python3 scripts/cache_helper.py admit 'tc-v3-ubi2-' tcarchive/toolchain.tar.gz '${{ steps.inputs.outputs.key }}'
     - name: Save toolchain cache
-      uses: actions/cache/save@main
+      uses: actions/cache/save@v6
       if: steps.tc_budget.outputs.save == 'true' && hashFiles('tcarchive/toolchain.tar.gz') != ''
       with: {path: tcarchive, key: '${{ steps.inputs.outputs.key }}'}
     - name: Prune old toolchain caches
@@ -197,7 +197,7 @@ jobs:
       if: steps.dl_changed.outputs.save == 'true'
       run: python3 scripts/cache_helper.py admit 'dl-v3.' dlarchive/dl.tar.gz '${{ steps.dl.outputs.cache-primary-key }}'
     - name: Save download cache
-      uses: actions/cache/save@main
+      uses: actions/cache/save@v6
       if: steps.dl_changed.outputs.save == 'true' && steps.dl_budget.outputs.save == 'true' && hashFiles('dlarchive/dl.tar.gz') != ''
       with: {path: dlarchive, key: '${{ steps.dl.outputs.cache-primary-key }}'}
     - name: Prune old download caches
@@ -220,7 +220,7 @@ jobs:
       id: record_upload
       continue-on-error: true
       if: ${{ always() }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: build-record-${{ github.run_id }}-${{ github.run_attempt }}
         path: build-record/

@@ -117,9 +117,9 @@ export -f sudo nproc make python3 docker_exec
                                     values[f"steps.{current['id']}.outputs.{key}"] = value
                                 (base / 'output').unlink()
                         else:
-                            self.assertIn(current['uses'], ('actions/cache/save@main', 'actions/upload-artifact@v4'))
+                            self.assertIn(current['uses'], ('actions/cache/save@v6', 'actions/upload-artifact@v7'))
                             outcome = 'failure' if name == fault else 'success'
-                            if outcome == 'success' and current['uses'] == 'actions/cache/save@main':
+                            if outcome == 'success' and current['uses'] == 'actions/cache/save@v6':
                                 saved.append(current['with']['path'])
                         successful = successful and outcome == 'success'
                     outcomes[name] = outcome
@@ -252,10 +252,10 @@ export -f make docker_exec sudo
                     rc = result.returncode
                     logs.append(name + '\n' + result.stdout + result.stderr)
                 else:
-                    self.assertIn(item['uses'], ('actions/cache/save@main', 'actions/upload-artifact@v4'))
-                    rc = 23 if ((fault == 'save' and item['uses'] == 'actions/cache/save@main') or
-                                   (fault == 'upload' and item['uses'] == 'actions/upload-artifact@v4')) else 0
-                    if not rc and item['uses'] == 'actions/cache/save@main':
+                    self.assertIn(item['uses'], ('actions/cache/save@v6', 'actions/upload-artifact@v7'))
+                    rc = 23 if ((fault == 'save' and item['uses'] == 'actions/cache/save@v6') or
+                                   (fault == 'upload' and item['uses'] == 'actions/upload-artifact@v7')) else 0
+                    if not rc and item['uses'] == 'actions/cache/save@v6':
                         inventory = json.loads(state.read_text())
                         inventory['entries'].append(entry(100+len(executed), render(item['with']['key'], values)))
                         state.write_text(json.dumps(inventory))
