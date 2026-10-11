@@ -14,8 +14,8 @@ EPOCH = 946684800
 INPUTS = ('tools', 'toolchain', 'include', 'scripts', 'config', 'target/linux/generic', 'target/linux/airoha',
           'rules.mk', 'Makefile', 'Config.in', '.config')
 # Compressed archive caps; oversized output is declined, never forced through.
-# dl stays above the measured rolling archives (1.49/1.92 GB).
-LIMITS = {'toolchain': 2_000_000_000, 'ccache': 3_000_000_000, 'dl': 2_200_000_000}
+# dl allows the measured 2.403/2.356 GB archives; total admission stays separate.
+LIMITS = {'toolchain': 2_000_000_000, 'ccache': 3_000_000_000, 'dl': 3_000_000_000}
 
 
 def key(root, builder):

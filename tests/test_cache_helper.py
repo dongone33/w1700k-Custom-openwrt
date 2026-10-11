@@ -118,6 +118,69 @@ class HelperTests(unittest.TestCase):
                 self.assertEqual(self.admit(size), accepted, self.log)
                 self.assertFalse(self.deletes())
 
+    def test_download_three_gb_pack_and_admission_boundaries(self):
+        from unittest.mock import patch
+        from test_cache_key import load, SCRIPT
+        cache = load(SCRIPT)
+        self.assertEqual(cache.LIMITS['dl'], 3_000_000_000)
+        self.assertEqual(h.SLOTS['dl-v3.'], 3_000_000_000)
+        packed = self.base / 'packed'
+        archive = packed / 'dl.tar.gz'
+        fixture = json.loads((ROOT / 'tests/fixtures/download-cache-inventory.json').read_text())
+        cases = [(size, True) for size in fixture['measured_bytes'].values()]
+        cases += [(3_000_000_000, True), (3_000_000_001, False)]
+        for size, accepted in cases:
+            with self.subTest(size=size):
+                def compress(args, **kwargs):
+                    self.assertEqual(args[0], 'tar')
+                    self.assertEqual(args[args.index('-cf') + 1], str(archive))
+                    with archive.open('wb') as output:
+                        output.truncate(size)
+                # Only compression is mocked; production pack applies the cap.
+                with patch.object(cache.subprocess, 'run', side_effect=compress):
+                    cache.pack(self.base, packed, 'dl', 'unused')
+                self.assertEqual(archive.exists(), accepted)
+                self.reset([])
+                self.assertEqual(self.admit(size, 'dl-v3.'), accepted, self.log)
+                self.assertFalse(self.deletes())
+
+    def test_current_paginated_inventory_and_three_gb_double_generation(self):
+        from unittest.mock import patch
+        fixture = json.loads((ROOT / 'tests/fixtures/download-cache-inventory.json').read_text())
+        for distro, pages in fixture['snapshots'].items():
+            # Preserve the real paginated API response, including IDs and refs.
+            with patch.object(h.subprocess, 'check_output', return_value=json.dumps(pages)) as api:
+                entries = h.inv()
+            self.assertEqual(api.call_args.args[0][2:4], ['--paginate', '--slurp'])
+            self.assertEqual(len(entries), pages[0]['total_count'])
+            self.assertEqual(len({e['id'] for e in entries}), len(entries))
+            for maximal_old in (False, True):
+                inventory = [dict(e) for e in entries]
+                if maximal_old:
+                    for e in inventory:
+                        if h.owner(e['key']) == 'dl-v3.':
+                            # Conservatively reserve an outer wrapper for the old
+                            # 3 GB inner archive as well as the new candidate.
+                            e['size_in_bytes'] = 3_000_000_000 + h.HEADROOM
+                for size in (fixture['measured_bytes'][distro], 3_000_000_000):
+                    with self.subTest(distro=distro, maximal_old=maximal_old, size=size):
+                        self.reset(inventory)
+                        self.assertTrue(self.admit(size, 'dl-v3.'), self.log)
+                        self.assertFalse(self.deletes())
+                        self.assertEqual(self.snapshot()['entries'], inventory)
+
+    def test_all_tiers_at_caps_reject_every_replacement(self):
+        entries = [entry(i, prefix + 'old', size)
+                   for i, (prefix, size) in enumerate(h.SLOTS.items(), 1)]
+        for prefix, size in h.SLOTS.items():
+            with self.subTest(prefix=prefix):
+                self.assertGreater(sum(h.SLOTS.values()) + size + h.HEADROOM, h.BUDGET)
+                self.reset(entries)
+                self.assertFalse(self.admit(size, prefix), self.log)
+                self.assertIn('repository budget exceeded', self.log)
+                self.assertFalse(self.deletes())
+                self.assertEqual(self.snapshot()['entries'], entries)
+
     def test_measured_download_replacement_fits_without_predeletion(self):
         # API inventory and inner gzip from run 34922925962 (2026-09-15).
         entries = [entry(1, 'tc-v3-ubi2-old', 1_568_383_907),

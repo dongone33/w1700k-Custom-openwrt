@@ -133,8 +133,10 @@ class CacheOrderTests(unittest.TestCase):
     def test_budget_denial_allows_smaller_later_candidate(self):
         saves, _, log = self.run_tail([entry(1, 'legacy', 8600000000)], cc=1500000000, tc=100)
         self.assertEqual(saves, ['tc', 'dl'], log)
-        saves, _, log = self.run_tail([entry(1, 'legacy', 2600000000)], cc=100, tc=2000000001)
-        self.assertEqual(saves, ['cc', 'dl'], log)
+        for legacy in (2600000000, 8600000000):
+            with self.subTest(legacy=legacy):
+                saves, _, log = self.run_tail([entry(1, 'legacy', legacy)], cc=100, tc=2000000001)
+                self.assertEqual(saves, ['cc', 'dl'], log)
 
     def test_missing_archive_and_admission_api_failure_can_continue(self):
         for options in ({'cc': None}, {'fail_reads': [1]}):

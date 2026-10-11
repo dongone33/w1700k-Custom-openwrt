@@ -111,6 +111,18 @@ for complete YAML-tail sequencing, 10GB boundaries, legacy accounting,
 cold/warm, failed upload and readback coverage. The migration removes a second
 firmware build, but no new CI timings establish a specific speedup or optimum.
 
+## Download capacity regression
+
+Download packing and admission both allow exactly **3,000,000,000 bytes**.
+The 10,000,000,000-byte repository budget, 64 MiB minimum wrapper margin,
+keys and save → confirmation → old-generation pruning remain unchanged.
+`test_cache_helper.py` replays the saved paginated inventories in
+`fixtures/download-cache-inventory.json`, measured 2.403/2.356 GB outputs,
+sparse cap/cap+1 and 3 GB old/new coexistence with the measured other tiers.
+Every replacement is rejected when all tiers already occupy their maxima;
+3 GB per download archive does not guarantee unlimited rollover headroom.
+Compression alone is stubbed for size tests; these are not speed benchmarks.
+
 ## Compression choice
 
 Packing uses `pigz -1` when already installed, otherwise `gzip -1`; extraction

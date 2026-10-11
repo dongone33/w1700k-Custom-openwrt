@@ -329,7 +329,7 @@ class PreparedKernelKeyTests(unittest.TestCase):
             result = subprocess.run(['make', '-rR', '-s', '-f', str(probe), 'probe'],
                                     cwd=root, check=True, text=True, capture_output=True)
             self.assertEqual(result.stdout.splitlines(),
-                             ['6.18', str(root / f'target/linux/generic/kernel-{active}')])
+                             [active, str(root / f'target/linux/generic/kernel-{active}')])
 
 
 if __name__ == '__main__':
