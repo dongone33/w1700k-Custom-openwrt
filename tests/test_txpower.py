@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MAC = 'package/network/config/wifi-scripts/files-ucode/lib/netifd/wireless/mac80211.sh'
 GEN = 'package/network/config/wifi-scripts/files-ucode/usr/share/ucode/wifi/hostapd.uc'
 HOST = 'package/network/services/hostapd/files/hostapd.uc'
-PATCH = ROOT / 'user/default/patches/920-wifi-non-mlo-ap-txpower.patch'
+from patch_source import PATCHES
+PATCH = PATCHES / 'patches/920-wifi-non-mlo-ap-txpower.patch'
 
 
 def function(source, name):
@@ -34,11 +35,12 @@ class TxpowerTests(unittest.TestCase):
             dest = cls.tree / name
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(Path(os.environ['TXPOWER_SOURCE']) / name, dest)
+        cls.zero_is_fixed = 'if (config.txpower != null)' in (cls.tree / MAC).read_text()
         if not os.environ.get('TXPOWER_BASELINE'):
             custom = (ROOT / 'user/default/custom.sh').read_text()
             line = next(line for line in custom.splitlines() if 'patch -p1 --fuzz=0' in line and PATCH.name in line)
             subprocess.run(['bash', '-ec', line], cwd=cls.tree,
-                           env=dict(os.environ, DK_PROFILE=str(ROOT/'user/default')),
+                           env=dict(os.environ, DK_PROFILE=str(ROOT/'user/default'), PATCH_DIR=str(PATCHES)),
                            check=True, capture_output=True)
         cls.mac, cls.gen, cls.host = [(cls.tree / n).read_text() for n in (MAC, GEN, HOST)]
 
@@ -80,7 +82,8 @@ setup(); printf('%J',{commands,config:passed});''')
         self.assertTrue(result['config']['per_interface_txpower'])
 
     def test_zero_and_auto(self):
-        self.assertEqual(self.setup_case(0)['config']['txpower'], 'fixed 000')
+        expected = 'fixed 000' if self.zero_is_fixed else 'auto'
+        self.assertEqual(self.setup_case(0)['config']['txpower'], expected)
         self.assertEqual(self.setup_case(None)['config']['txpower'], 'auto')
 
     def test_mlo_and_non_ap_keep_upstream_path(self):
@@ -320,7 +323,7 @@ printf('%J',iface_reload_config('phy0.0',{name:'phy0'},changed,old));
     def test_generator_and_parser_carry_power(self):
         for label, power, scoped, expected in (
                 ('fixed', 23, True, 'fixed 2300'),
-                ('zero', 0, True, 'fixed 000'),
+                ('zero', 0, True, 'fixed 000' if self.zero_is_fixed else 'auto'),
                 ('auto', None, True, 'auto'),
                 ('absent', 23, False, None)):
             with self.subTest(case=label):

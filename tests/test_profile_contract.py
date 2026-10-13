@@ -7,13 +7,14 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / 'user/default'
+from patch_source import PATCHES
 
 
 class ProfileContract(unittest.TestCase):
     def test_overlay_and_regdb_copy(self):
         text = (PROFILE / 'custom.sh').read_text()
         commands = [line for line in text.splitlines()
-                    if line.startswith('cp ') and ('$DK_PROFILE/tree/.' in line or '610-' in line)]
+                    if line.startswith('cp ') and ('$PATCH_DIR/tree/.' in line or '610-' in line)]
         self.assertEqual(len(commands), 2)
         self.assertIn('--no-preserve=ownership', commands[0])
         self.assertIn('610-w1700k-power-30.patch', commands[1])
@@ -21,11 +22,11 @@ class ProfileContract(unittest.TestCase):
             work = Path(tmp)
             (work / 'package/firmware/wireless-regdb/patches').mkdir(parents=True)
             subprocess.run(['bash', '-ec', '\n'.join(commands)], cwd=work,
-                           env=dict(os.environ, DK_PROFILE=str(PROFILE)), check=True)
-            for source in (PROFILE / 'tree').rglob('*'):
+                           env=dict(os.environ, DK_PROFILE=str(PROFILE), PATCH_DIR=str(PATCHES)), check=True)
+            for source in (PATCHES / 'tree').rglob('*'):
                 if source.is_file():
-                    self.assertEqual(source.read_bytes(), (work / source.relative_to(PROFILE / 'tree')).read_bytes())
-            self.assertEqual((PROFILE / 'patches/610-w1700k-power-30.patch').read_bytes(),
+                    self.assertEqual(source.read_bytes(), (work / source.relative_to(PATCHES / 'tree')).read_bytes())
+            self.assertEqual((PATCHES / 'openwrt/610-w1700k-power-30.patch').read_bytes(),
                              (work / 'package/firmware/wireless-regdb/patches/610-w1700k-power-30.patch').read_bytes())
 
     def test_no_unimplemented_fq_override(self):

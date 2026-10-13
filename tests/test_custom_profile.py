@@ -54,8 +54,8 @@ class CustomProfile(unittest.TestCase):
     def test_package_temp_cleanup_and_provenance(self):
         # Omit unrelated overlay/patch application; run real temporary clone/copy lifecycle.
         start = CUSTOM.index('if ! git clone --depth=1 https://github.com/yahuisme/packages.git')
-        end = CUSTOM.index('# Existing W1700K custom files', start)
-        lifecycle = CUSTOM[CUSTOM.index('PKG_REPO='):CUSTOM.index('# Checked-in,')]
+        end = CUSTOM.index('# Required patches', start)
+        lifecycle = CUSTOM[CUSTOM.index('PKG_REPO='):CUSTOM.index('if ! git clone --depth=1 https://github.com/yahuisme/packages.git')]
         fragment = lifecycle + CUSTOM[start:end]
         mock = '''git() {
     if [ "$1" = -C ]; then printf '%040d\\n' 456; return; fi

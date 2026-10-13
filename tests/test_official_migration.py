@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+from patch_source import PATCHES
 
 
 class OfficialMigrationTests(unittest.TestCase):
@@ -19,10 +20,10 @@ class OfficialMigrationTests(unittest.TestCase):
         self.assertLess(workflow.index('git clean -ffdx'), workflow.index('./scripts/feeds update'))
         custom = (ROOT / 'user/default/custom.sh').read_text()
         self.assertNotIn('OpenWRT-fanboy', custom)
-        self.assertIn('cp -a --no-preserve=ownership "$DK_PROFILE/tree/." .', custom)
+        self.assertIn('cp -a --no-preserve=ownership "$PATCH_DIR/tree/." .', custom)
 
     def test_minimal_kernel_delta(self):
-        tree = ROOT / 'user/default/tree'
+        tree = PATCHES / 'tree'
         patches = sorted(p.name for p in tree.glob('target/linux/airoha/patches-*/*.patch'))
         self.assertEqual([p[:3] for p in patches], ['745', '746', '940'])
         mt76_patches = sorted(p.name for p in tree.glob('package/kernel/mt76/patches/*.patch'))

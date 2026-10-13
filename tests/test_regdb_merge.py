@@ -10,12 +10,13 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / 'user/default'
-PATCH = PROFILE / 'patches/610-w1700k-power-30.patch'
+from patch_source import PATCHES
+PATCH = PATCHES / 'openwrt/610-w1700k-power-30.patch'
 
 
 class RegdbMergeTests(unittest.TestCase):
     def test_single_local_delta(self):
-        self.assertFalse((PROFILE / 'tree/package/firmware/wireless-regdb/patches/555-w1700k-fix.patch').exists())
+        self.assertFalse((PATCHES / 'tree/package/firmware/wireless-regdb/patches/555-w1700k-fix.patch').exists())
         text = PATCH.read_text()
         self.assertIn('+\t(5730 - 5895 @ 160), (30), AUTO-BW', text)
         self.assertIn('+\t(5925 - 7125 @ 320), (30), NO-OUTDOOR', text)

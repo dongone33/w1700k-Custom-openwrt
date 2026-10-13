@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+from patch_source import PATCHES
 NAME = '610-w1700k-power-30.patch'
 
 
@@ -24,16 +25,16 @@ class RegdbCopyTests(unittest.TestCase):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 profile = root / 'profile'
-                (profile / 'patches').mkdir(parents=True)
-                payload = (ROOT / 'user/default/patches' / NAME).read_bytes()
+                (profile / 'openwrt').mkdir(parents=True)
+                payload = (PATCHES / 'openwrt' / NAME).read_bytes()
                 if case != 'missing-source':
-                    (profile / 'patches' / NAME).write_bytes(payload)
+                    (profile / 'openwrt' / NAME).write_bytes(payload)
                 if case == 'invalid-destination':
                     (root / 'package/firmware/wireless-regdb').mkdir(parents=True)
                     (root / 'package/firmware/wireless-regdb/patches').write_text('blocked')
                 prefix = 'cp() { return 74; };\n' if case == 'copy-failure' else ''
                 result = subprocess.run(['bash', '-ec', prefix + self.fragment() + '\necho CONTINUED'],
-                                        cwd=root, env=dict(os.environ, DK_PROFILE=str(profile)),
+                                        cwd=root, env=dict(os.environ, PATCH_DIR=str(profile)),
                                         text=True, capture_output=True)
                 if case == 'success':
                     self.assertEqual(result.returncode, 0, result.stderr)

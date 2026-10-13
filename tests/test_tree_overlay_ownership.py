@@ -18,7 +18,7 @@ class TreeOverlayOwnership(unittest.TestCase):
 
     def test_overlay_preserves_buildroot_and_git_identity(self):
         script = (ROOT / 'user/default/custom.sh').read_text()
-        command = next(line for line in script.splitlines() if line.startswith('cp ') and '$DK_PROFILE/tree/.' in line)
+        command = next(line for line in script.splitlines() if line.startswith('cp ') and '$PATCH_DIR/tree/.' in line)
         with tempfile.TemporaryDirectory() as temp:
             base = Path(temp)
             tree = base / 'profile/tree'
@@ -34,7 +34,7 @@ class TreeOverlayOwnership(unittest.TestCase):
             (work / 'tracked').write_text('source\n')
             subprocess.run(['git', '-C', str(work), 'add', '.'], check=True)
             subprocess.run(['git', '-C', str(work), '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'source'], check=True)
-            env = dict(os.environ, DK_PROFILE=str(tree.parent), HOME=str(base), GIT_CONFIG_NOSYSTEM='1')
+            env = dict(os.environ, PATCH_DIR=str(tree.parent), HOME=str(base), GIT_CONFIG_NOSYSTEM='1')
             result = subprocess.run(['bash', '-ec', command], cwd=work, env=env, text=True, capture_output=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(work.stat().st_uid, 0, 'overlay changed root-owned buildroot to runner uid')

@@ -75,7 +75,7 @@ class SourceRevisionTests(unittest.TestCase):
         script = (ROOT / 'user/default/custom.sh').read_text()
         packages = ('PKG_REPO=$(mktemp -d)\ntrap \'rm -rf "$PKG_REPO"\' EXIT\n'
                     + script[script.index('if ! git clone --depth=1 https://github.com/yahuisme/packages.git'):
-                             script.index('# Existing W1700K custom files')])
+                             script.index('# Required patches')])
         aurora = script[script.index('for pkg in luci-theme-aurora'):script.index('# 修改 Aurora')]
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

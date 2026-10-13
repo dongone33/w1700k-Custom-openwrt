@@ -22,12 +22,6 @@ sed -i -e 's/PRETTY_NAME="%D %V"/PRETTY_NAME="%D %C"/' \
 PKG_REPO=$(mktemp -d)
 trap 'rm -rf "$PKG_REPO"' EXIT
 
-# Checked-in, narrowly scoped hardware/power delta; never fetch fork patches.
-# Keep container ownership: the mounted profile belongs to the runner UID.
-cp -a --no-preserve=ownership "$DK_PROFILE/tree/." .
-patch -p1 --fuzz=0 < "$DK_PROFILE/patches/002-w1700k-cpufreq-resources.patch"
-# wifi-scripts installs directly from source; its Build/Prepare is empty.
-patch -p1 --fuzz=0 < "$DK_PROFILE/patches/920-wifi-non-mlo-ap-txpower.patch"
 if ! git clone --depth=1 https://github.com/yahuisme/packages.git "$PKG_REPO"; then
     echo "ERROR: Failed to clone user packages repo!"
     exit 1
@@ -39,12 +33,28 @@ cp -r "$PKG_REPO/luci-app-wifi7" "$PKG_REPO/luci-app-airoha-npu" \
       "$PKG_REPO/luci-app-airoha-flowsense" \
       "$PKG_REPO/luci-app-airoha-fancontrol" package/
 
+# Required patches share the applications' exact packages checkout.
+PATCH_DIR="$PKG_REPO/w1700k-patches"
+for file in \
+    tree/target/linux/airoha/patches-6.18/745-net-pcs-airoha-extend-manual-rx-calib-to-E2-silicon.patch \
+    tree/target/linux/airoha/patches-6.18/746-net-dsa-mt7530-pre-deassert-phy-reset-gpios-before-mdio-scan.patch \
+    tree/target/linux/airoha/patches-6.18/940-pmdomain-airoha-cpu-pll-fallback.patch \
+    tree/package/kernel/mt76/patches/911-mt76-mt7996-refresh-power-limits-on-txpower-changes.patch \
+    tree/package/network/utils/iwinfo/patches/999-fix-txpower-list.patch; do
+    [ -s "$PATCH_DIR/$file" ] || { echo "ERROR: Required patch missing: $file" >&2; exit 1; }
+done
+# Preserve buildroot ownership when copying the patch overlay.
+cp -a --no-preserve=ownership "$PATCH_DIR/tree/." .
+patch -p1 --fuzz=0 < "$PATCH_DIR/patches/002-w1700k-cpufreq-resources.patch"
+# wifi-scripts installs directly from source; its Build/Prepare is empty.
+patch -p1 --fuzz=0 < "$PATCH_DIR/patches/920-wifi-non-mlo-ap-txpower.patch"
+
 # -------------------------------------------------
 # Existing W1700K custom files
 # -------------------------------------------------
 
 mkdir -p feeds/luci/modules/luci-mod-status/patches
-cp -f "$DK_PROFILE/patches/998-single-wiphy.patch" \
+cp -f "$PATCH_DIR/patches/998-single-wiphy.patch" \
     feeds/luci/modules/luci-mod-status/patches/998-single-wiphy.patch
 
 # Preserve the user's status LED colors, not donor platform enhancements.
@@ -119,7 +129,7 @@ rm -f tmp/.packageinfo 2>/dev/null || true
 # -------------------------------------------------
 mkdir -p package/firmware/wireless-regdb/patches
 
-cp -f "$DK_PROFILE/patches/610-w1700k-power-30.patch" package/firmware/wireless-regdb/patches/
+cp -f "$PATCH_DIR/openwrt/610-w1700k-power-30.patch" package/firmware/wireless-regdb/patches/
 echo "regdb patch: 610-w1700k-power-30.patch"
 
 echo "=============================================="
