@@ -125,11 +125,11 @@ rm -f tmp/.packageinfo 2>/dev/null || true
 
 
 # -------------------------------------------------
-# Wireless regdb customization; distro-specific delta follows official patches.
+# Shared regdb customization follows the official 500 patch.
 # -------------------------------------------------
 mkdir -p package/firmware/wireless-regdb/patches
 
-cp -f "$PATCH_DIR/openwrt/610-w1700k-power-30.patch" package/firmware/wireless-regdb/patches/
+cp -f "$PATCH_DIR/patches/610-w1700k-power-30.patch" package/firmware/wireless-regdb/patches/
 echo "regdb patch: 610-w1700k-power-30.patch"
 
 echo "=============================================="

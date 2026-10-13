@@ -26,7 +26,7 @@ class ProfileContract(unittest.TestCase):
             for source in (PATCHES / 'tree').rglob('*'):
                 if source.is_file():
                     self.assertEqual(source.read_bytes(), (work / source.relative_to(PATCHES / 'tree')).read_bytes())
-            self.assertEqual((PATCHES / 'openwrt/610-w1700k-power-30.patch').read_bytes(),
+            self.assertEqual((PATCHES / 'patches/610-w1700k-power-30.patch').read_bytes(),
                              (work / 'package/firmware/wireless-regdb/patches/610-w1700k-power-30.patch').read_bytes())
 
     def test_no_unimplemented_fq_override(self):

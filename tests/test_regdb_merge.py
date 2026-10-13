@@ -11,7 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / 'user/default'
 from patch_source import PATCHES
-PATCH = PATCHES / 'openwrt/610-w1700k-power-30.patch'
+PATCH = PATCHES / 'patches/610-w1700k-power-30.patch'
 
 
 class RegdbMergeTests(unittest.TestCase):

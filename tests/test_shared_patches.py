@@ -19,7 +19,7 @@ class SharedPatchTests(unittest.TestCase):
         self.assertIn('"$PATCH_DIR/tree/."', custom)
         self.assertNotIn('$DK_PROFILE/patches/', custom)
         self.assertNotIn('$DK_PROFILE/tree/', custom)
-        self.assertIn('"$PATCH_DIR/openwrt/610-w1700k-power-30.patch"', custom)
+        self.assertIn('"$PATCH_DIR/patches/610-w1700k-power-30.patch"', custom)
         self.assertIn('"$PATCH_DIR/patches/998-single-wiphy.patch"', custom)
 
     def test_no_duplicate_patch_payloads(self):

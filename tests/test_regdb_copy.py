@@ -25,10 +25,10 @@ class RegdbCopyTests(unittest.TestCase):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 profile = root / 'profile'
-                (profile / 'openwrt').mkdir(parents=True)
-                payload = (PATCHES / 'openwrt' / NAME).read_bytes()
+                (profile / 'patches').mkdir(parents=True)
+                payload = (PATCHES / 'patches' / NAME).read_bytes()
                 if case != 'missing-source':
-                    (profile / 'openwrt' / NAME).write_bytes(payload)
+                    (profile / 'patches' / NAME).write_bytes(payload)
                 if case == 'invalid-destination':
                     (root / 'package/firmware/wireless-regdb').mkdir(parents=True)
                     (root / 'package/firmware/wireless-regdb/patches').write_text('blocked')
