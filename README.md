@@ -47,4 +47,4 @@
 每日自动构建，也可手动运行 Actions。仅发布 `sysupgrade.itb`。
 构建记录位于对应 Actions 运行的 `build-record-*` artifact，保留 30 天；失败时保留已取得的诊断信息。
 
-[补丁来源](https://github.com/yahuisme/packages/tree/main/w1700k-patches/SOURCES.md)
+[补丁说明与来源](https://github.com/yahuisme/packages/tree/main/w1700k-patches/SOURCES.md)
